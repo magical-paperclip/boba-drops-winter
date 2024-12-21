@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Snowflakes</title>
+    <style>
+        body {
+            background-color: white;
+            margin: 0;
+            overflow: hidden;
+        }
+        .snowflake {
+            position: absolute;
+            top: -10px;
+            background: white;
+            border-radius: 50%;
+            opacity: 0.8;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="snowflakes"></canvas>
+    <script>
+        const canvas = document.getElementById('snowflakes');
+        const ctx = canvas.getContext('2d');
+        const snowflakes = [];
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+
+        function createSnowflake() {
+            const size = Math.random() * 5 + 2;
+            snowflakes.push({
+                x: Math.random() * canvas.width,
+                y: -size,
+                size: size,
+                speed: Math.random() * 1 + 0.5
+            });
+        }
+
+        function updateSnowflakes() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for (let i = 0; i < snowflakes.length; i++) {
+                const flake = snowflakes[i];
+                flake.y += flake.speed;
+                if (flake.y > canvas.height) {
+                    snowflakes.splice(i, 1);
+                    i--;
+                } else {
+                    ctx.beginPath();
+                    ctx.arc(flake.x, flake.y, flake.size, 0, Math.PI * 2);
+                    ctx.fillStyle = 'white';
+                    ctx.fill();
+                }
+            }
+        }
+
+        function animate() {
+            createSnowflake();
+            updateSnowflakes();
+            requestAnimationFrame(animate);
+        }
+
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+        animate();
+        
+    </script>
+</body>
+</html>
